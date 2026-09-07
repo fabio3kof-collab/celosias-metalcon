@@ -25,8 +25,10 @@ fallback del sistema si no hay internet.
 - **Marcado sobre el canal**: distancias desde el extremo izquierdo, canal superior
   e inferior por separado.
 - **Rendimiento por tira** y metraje total de material.
-- **Exportación DXF y SVG**. El DXF lleva la geometría real en milímetros por capas
-  (`PERFILES`, `CANAL`, `EJES`, `MARCAS`, `TEXTO`).
+- **Exportación DXF y SVG**, con descarga directa: los botones bajan el archivo con el
+  nombre de la viga (`zigzag-2620x600-5div.dxf`). El DXF lleva la geometría real en
+  milímetros por capas (`PERFILES`, `CANAL`, `EJES`, `MARCAS`, `TEXTO`), con sus tablas
+  `LTYPE` y `STYLE` declaradas.
 
 ## Geometría
 
@@ -61,5 +63,10 @@ paralelogramo: ambos cantos miden `Ld` y quedan corridos `b` entre sí.
 
 ## Uso
 
-Abre `index.html` en el navegador. Los parámetros quedan guardados en `localStorage`
+Abre `index.html` en el navegador. Los botones de exportar bajan el DXF y el SVG
+directo, y el contenido queda además en un panel por si prefieres copiarlo a mano.
+
+El mismo archivo corre publicado como artifact de Claude, donde la página no puede
+descargar por su cuenta: ahí detecta que va dentro de un iframe y pide el guardado a
+la plataforma (SVG) o cae al portapapeles (DXF, extensión que el visor no acepta). Los parámetros quedan guardados en `localStorage`
 bajo la clave `celosia-metalcon`.

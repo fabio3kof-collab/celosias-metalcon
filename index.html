@@ -388,7 +388,7 @@
           <button type="button" class="exbtn" id="exDxf">Copiar DXF</button>
           <button type="button" class="exbtn" id="exSvg">Copiar SVG</button>
         </div>
-        <p class="exhint" id="exHint">El visor de esta p&aacute;gina no deja descargar archivos, as&iacute; que el bot&oacute;n copia el contenido al portapapeles: lo pegas en el Bloc de notas y lo guardas con la extensi&oacute;n que corresponda.</p>
+        <p class="exhint" id="exHint">Ac&aacute; en el visor, el SVG se baja con una confirmaci&oacute;n y el DXF se copia al portapapeles, porque el visor no acepta esa extensi&oacute;n. Abriendo el HTML suelto en el navegador, los dos se descargan directo.</p>
         <details class="exbox" id="exBox" hidden>
           <summary>Contenido de <span id="exName">viga.dxf</span></summary>
           <textarea id="exTa" readonly spellcheck="false"></textarea>
@@ -402,6 +402,14 @@
 (function(){
   "use strict";
   var K = 1000; // m -> mm
+
+  // Dentro del visor de artifacts la pagina va en un iframe con sandbox y las descargas
+  // quedan inertes; abierta como archivo suelto, si se puede bajar el DXF y el SVG.
+  var SUELTO = (function(){ try{ return window.self === window.top; }catch(e){ return false; } })();
+
+  // El visor solo guarda ciertas extensiones. 'dxf' no esta en la lista, asi que ese
+  // sigue saliendo por el portapapeles mientras la pagina corra dentro del visor.
+  var VISOR_EXT = /\.svg$/i;
 
   var S = {tipo:'zigzag', modo:'tope', first:'baja', pratDir:'sim',
            L:2.62, H:0.60, n:5, a:38, c:25, hol:0, tira:6, v:2};
@@ -1008,33 +1016,81 @@
            '" width="1400" role="img">'+css+bg+src.innerHTML+'</svg>\n';
   }
 
-  function deliver(text, nombre){
+  function bajar(text, nombre, mime){
+    try{
+      if(!window.Blob || !window.URL || !URL.createObjectURL) return false;
+      var a=document.createElement('a');
+      if(!('download' in a)) return false;
+      var url=URL.createObjectURL(new Blob([text],{type:mime}));
+      a.href=url; a.download=nombre; a.style.display='none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} }, 10000);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function deliver(text, nombre, mime){
     var ta=document.getElementById('exTa'), box=document.getElementById('exBox'),
         hint=document.getElementById('exHint');
     if(!text){ hint.textContent='No hay dibujo que exportar: revisa las medidas primero.'; return; }
     ta.value=text; box.hidden=false; document.getElementById('exName').textContent=nombre;
     var kb=Math.round(text.length/1024);
+
+    // el contenido queda siempre abajo: si la descarga no aparece, se copia a mano
+    if(SUELTO && bajar(text, nombre, mime)){
+      hint.textContent='Descargando '+nombre+' ('+kb+' KB). Si el navegador la bloqueó, el contenido quedó abajo: haz clic dentro, Ctrl+A, Ctrl+C.';
+      return;
+    }
+
     var ok=function(){ hint.textContent='Copiado ('+kb+' KB). Pégalo en el Bloc de notas y guárdalo como '+nombre+'.'; };
     var no=function(){
       try{ ta.focus(); ta.select(); if(document.execCommand('copy')){ ok(); return; } }catch(e){}
       box.open=true;
       hint.textContent='El portapapeles está bloqueado acá. El contenido quedó abajo: haz clic dentro, Ctrl+A, Ctrl+C, y guárdalo como '+nombre+'.';
     };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      try{ navigator.clipboard.writeText(text).then(ok, no); }catch(e){ no(); }
-    }else no();
+    var alPortapapeles=function(){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        try{ navigator.clipboard.writeText(text).then(ok, no); }catch(e){ no(); }
+      }else no();
+    };
+
+    // dentro del visor la pagina no baja archivos por su cuenta: se los pide a la plataforma,
+    // que le muestra al lector una confirmacion. Solo vale para las extensiones que acepta.
+    if(!window.Promise || !VISOR_EXT.test(nombre) || !(window.claude && typeof window.claude.use==='function')){
+      alPortapapeles(); return;
+    }
+    hint.textContent='Preparando '+nombre+'…';
+    window.claude.use('downloads').then(function(d){
+      if(!d) return 'sin-soporte';
+      return d.save({filename:nombre, data:text}).then(
+        function(){ return 'guardado'; },
+        function(err){ return (err && err.code==='declined') ? 'cancelado' : 'sin-soporte'; }
+      );
+    }, function(){ return 'sin-soporte'; }).then(function(res){
+      if(res==='guardado'){ hint.textContent=nombre+' guardado ('+kb+' KB).'; return; }
+      if(res==='cancelado'){ hint.textContent='Descarga cancelada. El contenido quedó abajo por si lo quieres copiar.'; return; }
+      alPortapapeles();
+    });
   }
 
   function nombreBase(){
     return (S.tipo==='zigzag'?'zigzag':'pratt')+'-'+Math.round(S.L*1000)+'x'+Math.round(S.H*1000)+'-'+Math.round(S.n)+'div';
   }
   document.getElementById('exDxf').addEventListener('click',function(){
-    var R=compute(S); if(R.err){ deliver('', ''); return; }
-    deliver(toDXF(R,S), nombreBase()+'.dxf');
+    var R=compute(S); if(R.err){ deliver('', '', ''); return; }
+    deliver(toDXF(R,S), nombreBase()+'.dxf', 'application/dxf');
   });
   document.getElementById('exSvg').addEventListener('click',function(){
-    deliver(toSVG(), nombreBase()+'.svg');
+    deliver(toSVG(), nombreBase()+'.svg', 'image/svg+xml;charset=utf-8');
   });
+
+  if(SUELTO){
+    document.getElementById('exDxf').textContent='Descargar DXF';
+    document.getElementById('exSvg').textContent='Descargar SVG';
+    document.getElementById('exHint').textContent='Los botones bajan el archivo directo, con el nombre de la viga. El contenido queda ademas en el panel de abajo por si quieres copiarlo a mano.';
+  }
 
   render();
 })();
