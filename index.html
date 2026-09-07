@@ -368,7 +368,7 @@
       <details>
         <summary>Supuestos de cálculo</summary>
         <ul>
-          <li>El alto y el largo son medidas <b>exteriores</b>, de alma a alma del canal. Montantes y diagonales entran dentro del canal hasta tocar el alma, así que su largo de corte es el alto total menos la holgura.</li>
+          <li>El alto y el largo son medidas <b>exteriores</b>, de alma a alma del canal. Montantes y diagonales entran dentro del canal hasta tocar el alma; la <b>holgura de corte</b> los acorta sobre su propio eje para que entren sin forzar. El ángulo lo fija la geometría de la viga, no la holgura: subir la holgura acorta las piezas y se ve en el dibujo, pero no mueve el trazado ni los ejes de junta.</li>
           <li>En la elevación se ve el <b>ala</b> de cada perfil: 38&nbsp;mm en el montante y 25&nbsp;mm en el canal son los valores Metalcon corrientes (también hay canales de 20). El tramo del perfil que queda escondido tras el ala del canal se dibuja con línea segmentada.</li>
           <li>Las diagonales se cortan con ambos extremos <b>paralelos al canal</b>, no en escuadra. Por eso el trozo sale en paralelogramo: los dos cantos miden lo mismo y quedan corridos entre sí una distancia igual al <code>desfase</code>.</li>
           <li>El <b>eje de junta</b> es el punto exacto donde topan dos perfiles. Da igual el criterio de nodo y el ángulo: siempre quedan equiespaciados, así que es la medida que conviene replantear con huincha corrida sobre el canal. En zig-zag van alternando entre canal superior e inferior; en Pratt coinciden con el eje de cada montante.</li>
@@ -437,24 +437,28 @@
 
     var th, w, r;
     if(s.modo==='ejes'){
-      r = base; th = Math.atan2(Hm, r); w = a/Math.sin(th);
+      r = base; th = Math.atan2(H, r); w = a/Math.sin(th);
     }else{
-      th = Math.atan2(Hm, base);
+      th = Math.atan2(H, base);
       for(var i=0;i<120;i++){
         w = a/Math.sin(th);
         r = base - w;
         if(r <= 0.005) return {err:'Con '+n+' divisiones las diagonales quedan casi verticales y no cabe el ancho del perfil. Usa menos divisiones.'};
-        th = Math.atan2(Hm, r);
+        th = Math.atan2(H, r);
       }
       w = a/Math.sin(th); r = base - w;
     }
 
-    var Ld = Hm/Math.sin(th);
+    // el angulo lo fija la geometria de la viga, alma a alma. La holgura solo acorta la
+    // pieza sobre su propio eje: no mueve el trazado ni los ejes de junta.
+    var Ld = H/Math.sin(th) - hol;
+    if(Ld <= 0) return {err:'La holgura de corte se comió el largo de la diagonal.'};
     var desf = a/Math.tan(th);
     var q = (L - a)/n;
     var mem = [];
-    function mont(id,cx){ return {id:id,kind:'M',topC:cx,botC:cx,hw:a/2,len:Hm,ang:90}; }
-    function diag(id,t,b){ return {id:id,kind:'D',topC:t,botC:b,hw:w/2,len:Ld,ang:th*180/Math.PI}; }
+    var vinM = hol/2, vinD = hol*Math.sin(th)/2;   // cuanto se retira cada extremo por la holgura
+    function mont(id,cx){ return {id:id,kind:'M',topC:cx,botC:cx,hw:a/2,len:Hm,ang:90,vin:vinM}; }
+    function diag(id,t,b){ return {id:id,kind:'D',topC:t,botC:b,hw:w/2,len:Ld,ang:th*180/Math.PI,vin:vinD}; }
 
     if(s.tipo==='zigzag'){
       mem.push(mont('M1', a/2));
@@ -520,6 +524,15 @@
     return '<line class="dim" x1="'+(x-dx).toFixed(1)+'" y1="'+(y-dy).toFixed(1)+'" x2="'+(x+dx).toFixed(1)+'" y2="'+(y+dy).toFixed(1)+'"/>';
   }
 
+  // Esquinas de un perfil, en mm, con y medido hacia abajo desde el canal superior.
+  // Cada extremo se retira m.vin: asi la holgura de corte se ve en el dibujo y sale en el DXF.
+  function memPts(m, Hmm){
+    var y1=m.vin*K, y2=Hmm-m.vin*K, hw=m.hw*K;
+    function cx(y){ return (m.topC + (m.botC-m.topC)*(Hmm>0 ? y/Hmm : 0))*K; }
+    var c1=cx(y1), c2=cx(y2);
+    return [[c1-hw,y1],[c1+hw,y1],[c2+hw,y2],[c2-hw,y2]];
+  }
+
   function draw(R,s){
     var L=R.L*K, H=R.H*K, c=R.c*K;
     var ml=310, mr=150, mt=400, mb=480;
@@ -536,10 +549,9 @@
       g.push('<line class="axis" x1="'+nx+'" y1="-72" x2="'+nx+'" y2="'+(H+110)+'"/>');
     });
 
-    // perfiles completos
+    // perfiles completos, ya acortados por la holgura
     function poly(m){
-      var t1=(m.topC-m.hw)*K, t2=(m.topC+m.hw)*K, b1=(m.botC-m.hw)*K, b2=(m.botC+m.hw)*K;
-      return t1.toFixed(1)+',0 '+t2.toFixed(1)+',0 '+b2.toFixed(1)+','+H+' '+b1.toFixed(1)+','+H;
+      return memPts(m,H).map(function(q){ return q[0].toFixed(1)+','+q[1].toFixed(1); }).join(' ');
     }
     R.mem.forEach(function(m){ g.push('<polygon class="member" points="'+poly(m)+'"/>'); });
 
@@ -868,12 +880,21 @@
       S[p[1]]=b.dataset.v; render();
     });
   });
+  var LIM={n:[2,16]};
+  function clamp(k,v){ var l=LIM[k]; return l ? Math.max(l[0],Math.min(l[1],Math.round(v))) : v; }
   [['iL','L'],['iH','H'],['iN','n'],['iA','a'],['iC','c'],['iZ','hol'],['iT','tira']].forEach(function(p){
     var el=document.getElementById(p[0]);
     el.value=S[p[1]];
     el.addEventListener('input',function(){
       var v=parseFloat(el.value);
-      if(!isNaN(v)){ S[p[1]]= p[1]==='n' ? Math.max(2,Math.min(16,Math.round(v))) : v; render(); }
+      if(!isNaN(v)){ S[p[1]]=clamp(p[1],v); render(); }
+    });
+    el.addEventListener('change',function(){          // al salir del campo, que muestre lo que de verdad se calculo
+      var v=parseFloat(el.value);
+      if(isNaN(v)){ el.value=S[p[1]]; return; }       // campo vacio: vuelve al ultimo valor bueno
+      S[p[1]]=clamp(p[1],v);
+      if(parseFloat(el.value)!==S[p[1]]) el.value=S[p[1]];
+      render();
     });
   });
 
@@ -907,7 +928,7 @@
       g(0,'LINE'); g(8,layer); g(10,n(x1)); g(20,n(y1)); g(30,0); g(11,n(x2)); g(21,n(y2)); g(31,0);
     }
     function txt(layer,x,y,h,str){
-      g(0,'TEXT'); g(8,layer); g(10,n(x)); g(20,n(y)); g(30,0); g(40,n(h)); g(1,str);
+      g(0,'TEXT'); g(8,layer); g(7,'STANDARD'); g(10,n(x)); g(20,n(y)); g(30,0); g(40,n(h)); g(1,str);
       g(72,1); g(11,n(x)); g(21,n(y)); g(31,0);
     }
     function pnt(layer,x,y){ g(0,'POINT'); g(8,layer); g(10,n(x)); g(20,n(y)); g(30,0); }
@@ -920,15 +941,29 @@
     g(0,'ENDSEC');
 
     var caps=[['PERFILES',7],['CANAL',4],['EJES',2],['MARCAS',1],['TEXTO',3]];
-    g(0,'SECTION'); g(2,'TABLES'); g(0,'TABLE'); g(2,'LAYER'); g(70,caps.length);
+    g(0,'SECTION'); g(2,'TABLES');
+
+    // las capas referencian CONTINUOUS, asi que hay que declararlo
+    g(0,'TABLE'); g(2,'LTYPE'); g(70,1);
+    g(0,'LTYPE'); g(2,'CONTINUOUS'); g(70,0); g(3,'Solid line'); g(72,65); g(73,0); g(40,0);
+    g(0,'ENDTAB');
+
+    g(0,'TABLE'); g(2,'LAYER'); g(70,caps.length);
     caps.forEach(function(l){ g(0,'LAYER'); g(2,l[0]); g(70,0); g(62,l[1]); g(6,'CONTINUOUS'); });
-    g(0,'ENDTAB'); g(0,'ENDSEC');
+    g(0,'ENDTAB');
+
+    // los TEXT llevan justificacion centrada y necesitan un estilo declarado
+    g(0,'TABLE'); g(2,'STYLE'); g(70,1);
+    g(0,'STYLE'); g(2,'STANDARD'); g(70,0); g(40,0); g(41,1); g(50,0); g(71,0); g(42,2.5); g(3,'txt'); g(4,'');
+    g(0,'ENDTAB');
+
+    g(0,'ENDSEC');
 
     g(0,'SECTION'); g(2,'ENTITIES');
     poly('CANAL',[[0,H],[L,H],[L,H-c],[0,H-c]]);
     poly('CANAL',[[0,0],[L,0],[L,c],[0,c]]);
     R.mem.forEach(function(m){
-      poly('PERFILES',[[(m.topC-m.hw)*K,H],[(m.topC+m.hw)*K,H],[(m.botC+m.hw)*K,0],[(m.botC-m.hw)*K,0]]);
+      poly('PERFILES', memPts(m,H).map(function(q){ return [q[0], H-q[1]]; }));
       txt('TEXTO',((m.topC+m.botC)/2)*K, H/2, 32, m.id);
     });
     R.nodes.forEach(function(nd){
@@ -959,7 +994,7 @@
       '.ghost{fill:none;stroke:'+v('--steel','#456')+';stroke-width:3;stroke-dasharray:24 16;opacity:.5}'+
       '.chord{fill:'+v('--surface','#fff')+';stroke:'+v('--steel','#456')+';stroke-width:4}'+
       '.axis{stroke:'+v('--rule','#aaa')+';stroke-width:2.5;stroke-dasharray:70 22 8 22;opacity:.75;fill:none}'+
-      '.dim{stroke:'+v('--accent','#c33')+';stroke-width:3.2;fill:none}'+
+      '.dim{stroke:'+v('--accent','#c33')+';stroke-width:3.2;fill:none;stroke-linecap:square}'+
       '.dimx{stroke:'+v('--accent','#c33')+';stroke-width:2;opacity:.5;fill:none}'+
       '.dimt{fill:'+v('--accent','#c33')+';font-family:'+F+';font-weight:600}'+
       '.bub{fill:'+v('--surface','#fff')+';stroke:'+v('--rule','#aaa')+';stroke-width:3}'+

@@ -32,14 +32,17 @@ fallback del sistema si no hay internet.
 
 Con largo total `L`, alto total `H`, `n` divisiones, ala del montante `a` y holgura `z`:
 
-    Hm   = H - z                    largo de corte del montante y rise de la diagonal
     base = (L - 2a)/n               zig-zag
     base = (L - a)/n - a            Pratt
-    θ    = atan(Hm / r)             ángulo de la diagonal respecto de la horizontal
+    θ    = atan(H / r)              ángulo de la diagonal respecto de la horizontal
     w    = a / sin(θ)               huella horizontal del perfil diagonal
     r    = base - w                 (modo "a tope"; en modo "ejes" r = base)
-    Ld   = Hm / sin(θ)              largo de corte sobre cada canto
+    Lm   = H - z                    largo de corte del montante
+    Ld   = H / sin(θ) - z           largo de corte de la diagonal, sobre cada canto
     b    = a / tan(θ)               desfase entre las marcas de los dos cantos
+
+El ángulo lo fija la geometría de la viga (`H`, alma a alma). La holgura `z` solo
+acorta cada pieza sobre su propio eje, así que no mueve el trazado ni los ejes de junta.
 
 En modo *a tope*, `θ` y `r` se resuelven por iteración de punto fijo, porque la huella
 `w` depende del ángulo y el ángulo depende de la huella. El corte de la diagonal es un
@@ -51,6 +54,8 @@ paralelogramo: ambos cantos miden `Ld` y quedan corridos `b` entre sí.
 - En la elevación se ve el **ala** de cada perfil (38 mm montante, 25 mm canal son los
   valores Metalcon corrientes).
 - Las diagonales se cortan con ambos extremos **paralelos al canal**, no en escuadra.
+- La **holgura de corte** acorta las piezas sobre su eje; se ve en la elevación y sale
+  reflejada en el DXF.
 - Esto resuelve la **geometría** del despiece. El dimensionamiento estructural
   —espesor de lámina, altura de alma, cantidad de tornillos por nodo— es otra pega.
 
