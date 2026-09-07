@@ -1,0 +1,1008 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Trazado de celosías Metalcon</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Barlow+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#edeff1;
+    --surface:#fbfcfc;
+    --surface-2:#f3f5f6;
+    --ink:#12161b;
+    --ink-2:#39434f;
+    --muted:#6b7480;
+    --line:#d7dce1;
+    --rule:#b2bac2;
+    --accent:#bd3a21;
+    --accent-soft:rgba(189,58,33,.10);
+    --steel:#4a5a6e;
+    --steel-fill:rgba(74,90,110,.09);
+    --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --cond:'Barlow Condensed','Archivo Narrow',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#14171b;
+      --surface:#1b2026;
+      --surface-2:#20262d;
+      --ink:#e6e9ec;
+      --ink-2:#bcc5cf;
+      --muted:#939da8;
+      --line:#293038;
+      --rule:#3b444e;
+      --accent:#e4735a;
+      --accent-soft:rgba(228,115,90,.14);
+      --steel:#a6b8cb;
+      --steel-fill:rgba(166,184,203,.11);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#14171b;
+    --surface:#1b2026;
+    --surface-2:#20262d;
+    --ink:#e6e9ec;
+    --ink-2:#bcc5cf;
+    --muted:#939da8;
+    --line:#293038;
+    --rule:#3b444e;
+    --accent:#e4735a;
+    --accent-soft:rgba(228,115,90,.14);
+    --steel:#a6b8cb;
+    --steel-fill:rgba(166,184,203,.11);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{max-width:1260px;margin:0 auto;padding:34px 22px 90px}
+
+  /* ---------- cabecera ---------- */
+  .head{border-bottom:1px solid var(--rule);padding-bottom:22px;margin-bottom:28px}
+  .eyebrow{
+    font-family:var(--cond);font-weight:600;font-size:13px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:var(--sans);font-weight:600;font-size:clamp(26px,4vw,38px);
+    letter-spacing:-.02em;line-height:1.08;margin:0 0 10px;text-wrap:balance;
+  }
+  .lede{margin:0;max-width:62ch;color:var(--muted);font-size:15.5px}
+
+  /* ---------- estructura ---------- */
+  .work{display:grid;grid-template-columns:288px minmax(0,1fr);gap:34px;align-items:start}
+  @media (max-width:960px){.work{grid-template-columns:1fr;gap:26px}}
+
+  .rail{position:sticky;top:20px;display:flex;flex-direction:column;gap:22px}
+  @media (max-width:960px){.rail{position:static}}
+
+  .grp{display:flex;flex-direction:column;gap:11px}
+  .grp-t{
+    font-family:var(--cond);font-weight:600;font-size:12.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);
+    padding-bottom:7px;border-bottom:1px solid var(--line);margin:0;
+  }
+  .field{display:grid;grid-template-columns:1fr 104px;align-items:center;gap:10px}
+  .field label{font-size:13.5px;color:var(--ink-2)}
+  .field .u{font-family:var(--cond);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .field .u.raw{text-transform:none;letter-spacing:.03em;font-size:12.5px}
+  input[type=number]{
+    width:100%;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums;
+    padding:7px 9px;border:1px solid var(--line);border-radius:3px;
+    background:var(--surface);color:var(--ink);text-align:right;
+  }
+  input[type=number]:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+
+  .seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface)}
+  .seg button{
+    flex:1;font-family:var(--cond);font-size:14px;font-weight:600;letter-spacing:.05em;
+    text-transform:uppercase;padding:8px 6px;border:0;background:transparent;color:var(--muted);
+    cursor:pointer;border-right:1px solid var(--line);
+  }
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+  :root[data-theme="dark"] .seg button[aria-pressed="true"],
+  .seg button[aria-pressed="true"]{color:#fff}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+  /* ---------- dibujo ---------- */
+  .sheet{
+    background:var(--surface);border:1px solid var(--line);
+    padding:16px 18px 10px;margin-bottom:22px;
+  }
+  .sheet-bar{
+    display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    font-family:var(--cond);font-size:13px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:10px;
+  }
+  .sheet-bar b{color:var(--ink);font-weight:600;letter-spacing:.06em}
+  .canvas{overflow-x:auto}
+  .dwg{display:block;width:100%;height:auto;min-width:540px}
+  .dwg .member{fill:var(--steel-fill);stroke:var(--steel);stroke-width:4;stroke-linejoin:round}
+  .dwg .ghost{fill:none;stroke:var(--steel);stroke-width:3;stroke-dasharray:24 16;opacity:.5}
+  .dwg .chord{fill:var(--surface);stroke:var(--steel);stroke-width:4}
+  .dwg .axis{stroke:var(--rule);stroke-width:2.5;stroke-dasharray:70 22 8 22;opacity:.75;fill:none}
+  .dwg .dim{stroke:var(--accent);stroke-width:3.2;fill:none;stroke-linecap:square}
+  .dwg .dimx{stroke:var(--accent);stroke-width:2;opacity:.5;fill:none}
+  .dwg .dimt{fill:var(--accent);font-family:var(--cond);font-weight:600}
+  .dwg .bub{fill:var(--surface);stroke:var(--rule);stroke-width:3}
+  .dwg .bubt{fill:var(--muted);font-family:var(--cond);font-weight:600}
+  .dwg .lbl{
+    fill:var(--ink);font-family:var(--cond);font-weight:600;
+    paint-order:stroke;stroke:var(--surface);stroke-width:13;stroke-linejoin:round;
+  }
+
+  /* ---------- cifras ---------- */
+  .figs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);
+        border:1px solid var(--line);margin-bottom:22px}
+  @media (max-width:760px){.figs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .fig{background:var(--surface);padding:14px 15px 15px;display:flex;flex-direction:column;gap:3px}
+  .fig .k{font-family:var(--cond);font-size:12.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  .fig .v{font-family:var(--mono);font-weight:500;font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .fig .s{font-size:12.5px;color:var(--muted)}
+  .fig.hero .v{color:var(--accent)}
+
+  /* ---------- tablas ---------- */
+  section{margin-bottom:30px}
+  h2{
+    font-family:var(--cond);font-weight:600;font-size:14px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink);margin:0 0 3px;
+  }
+  .sub{margin:0 0 13px;font-size:13.5px;color:var(--muted);max-width:64ch}
+  .tw{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 13px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{
+    font-family:var(--cond);font-weight:600;font-size:12.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);background:var(--surface-2);
+  }
+  tbody tr:last-child td{border-bottom:0}
+  td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  td.id{font-family:var(--mono);font-weight:500}
+  .tag{
+    display:inline-block;font-family:var(--cond);font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;padding:2px 7px;border-radius:2px;background:var(--accent-soft);color:var(--accent);
+  }
+  .tag.m{background:var(--steel-fill);color:var(--steel)}
+
+  .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  @media (max-width:860px){.pair{grid-template-columns:1fr}}
+
+  .sum{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);background:var(--surface)}
+  .sum div{flex:1 1 190px;padding:13px 15px;border-right:1px solid var(--line)}
+  .sum div:last-child{border-right:0}
+  .sum dt{font-family:var(--cond);font-size:12.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+  .sum dd{margin:0;font-family:var(--mono);font-size:16px;font-variant-numeric:tabular-nums}
+
+  .alert{
+    border-left:3px solid var(--accent);background:var(--accent-soft);
+    padding:12px 15px;font-size:14px;margin-bottom:20px;color:var(--ink);
+  }
+  details{border-top:1px solid var(--line);padding-top:16px}
+  summary{
+    cursor:pointer;font-family:var(--cond);font-size:13px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  details ul{margin:14px 0 0;padding-left:20px;max-width:70ch;color:var(--ink-2);font-size:14px}
+  details li{margin-bottom:7px}
+  details code{font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1px 5px;border-radius:2px}
+  .foot{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+  .dwg.sm{min-width:0}
+  .dwg .strip{fill:var(--surface-2);stroke:var(--steel);stroke-width:3}
+  .dwg .piece{fill:var(--steel-fill);stroke:var(--steel);stroke-width:3.5;stroke-linejoin:round}
+  .dwg .waste{fill:none;stroke:var(--rule);stroke-width:2;opacity:.9}
+  .dwg .cutline{stroke:var(--accent);stroke-width:6;stroke-linecap:round}
+  .dwg .brk{stroke:var(--steel);stroke-width:3;fill:none}
+  .dwg .arc{fill:none;stroke:var(--accent);stroke-width:3}
+  .dwg .edge{fill:var(--muted);font-family:var(--cond);font-weight:600}
+  .cutgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start}
+  @media (max-width:900px){.cutgrid{grid-template-columns:1fr}}
+  .plate{background:var(--surface);border:1px solid var(--line);padding:14px 16px 16px}
+  .plate + .plate{margin-top:18px}
+  .plate-t{font-family:var(--cond);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .steps{margin:0;padding-left:19px;font-size:14px;color:var(--ink-2);line-height:1.55}
+  .steps li{margin-bottom:10px;padding-left:3px}
+  .steps b{color:var(--ink);font-family:var(--mono);font-weight:500;font-size:13.5px}
+  .solver{display:flex;flex-direction:column;gap:10px}
+  .linkbtn{align-self:flex-start;margin-top:2px;font-family:var(--cond);font-size:13px;letter-spacing:.09em;
+           text-transform:uppercase;background:none;border:1px solid var(--line);color:var(--muted);
+           padding:6px 12px;border-radius:3px;cursor:pointer}
+  .linkbtn:hover{color:var(--accent);border-color:var(--accent)}
+  .linkbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .yield{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);background:var(--surface);margin-top:20px}
+  .yield div{flex:1 1 165px;padding:13px 15px;border-right:1px solid var(--line)}
+  .yield div:last-child{border-right:0}
+  .yield dt{font-family:var(--cond);font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+  .yield dd{margin:0;font-family:var(--mono);font-size:16px;font-variant-numeric:tabular-nums}
+
+  .export{border-top:1px solid var(--rule);padding-top:26px;margin-top:14px}
+  .exbtns{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+  .exbtn{font-family:var(--cond);font-size:14px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+         background:var(--surface);border:1px solid var(--rule);color:var(--ink);padding:10px 18px;
+         border-radius:3px;cursor:pointer}
+  .exbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .exbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .exhint{margin:13px 0 0;font-size:13.5px;color:var(--ink-2);min-height:21px;max-width:70ch}
+  .exbox{border-top:0;padding-top:14px;margin-top:6px}
+  .exbox textarea{width:100%;height:200px;margin-top:11px;font-family:var(--mono);font-size:11.5px;
+    line-height:1.45;border:1px solid var(--line);border-radius:3px;background:var(--surface-2);
+    color:var(--ink-2);padding:10px;resize:vertical}
+  [hidden]{display:none !important}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+
+<div class="shell">
+  <header class="head">
+    <p class="eyebrow">Viga de entramado · perfilería Metalcon</p>
+    <h1>Trazado de celosías Metalcon</h1>
+    <p class="lede">Entrega los largos de corte de montantes y diagonales, el ángulo de corte y las marcas exactas sobre el canal, descontando el ancho real de las alas para que los perfiles queden a tope en cada nodo.</p>
+  </header>
+
+  <div class="work">
+    <aside class="rail">
+      <div class="grp">
+        <p class="grp-t">Celosía</p>
+        <div class="seg" id="segTipo" role="group" aria-label="Tipo de celosía">
+          <button type="button" data-v="zigzag">Zig-zag</button>
+          <button type="button" data-v="pratt">Pratt</button>
+        </div>
+        <div class="seg" id="segFirst" role="group" aria-label="Primera diagonal">
+          <button type="button" data-v="baja">1ª baja &#8600;</button>
+          <button type="button" data-v="sube">1ª sube &#8599;</button>
+        </div>
+        <div class="seg" id="segPrat" role="group" aria-label="Dirección de las diagonales">
+          <button type="button" data-v="sim">Simétricas</button>
+          <button type="button" data-v="par">Paralelas</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <p class="grp-t">Geometría</p>
+        <div class="field"><label for="iL">Largo total <span class="u">m</span></label><input type="number" id="iL" step="0.01" min="0.3"></div>
+        <div class="field"><label for="iH">Alto total <span class="u">m</span></label><input type="number" id="iH" step="0.01" min="0.1"></div>
+        <div class="field"><label for="iN">Divisiones</label><input type="number" id="iN" step="1" min="2" max="16"></div>
+      </div>
+
+      <div class="grp">
+        <p class="grp-t">Perfiles</p>
+        <div class="field"><label for="iA">Ala montante <span class="u">mm</span></label><input type="number" id="iA" step="1" min="5"></div>
+        <div class="field"><label for="iC">Ala canal <span class="u">mm</span></label><input type="number" id="iC" step="1" min="2"></div>
+        <div class="field"><label for="iZ">Holgura de corte <span class="u">mm</span></label><input type="number" id="iZ" step="0.5" min="0" max="20"></div>
+        <div class="field"><label for="iT">Tira de perfil <span class="u">m</span></label><input type="number" id="iT" step="0.1" min="0.5"></div>
+      </div>
+
+      <div class="grp">
+        <p class="grp-t">Criterio de nodo</p>
+        <div class="seg" id="segModo" role="group" aria-label="Criterio de nodo">
+          <button type="button" data-v="tope">A tope</button>
+          <button type="button" data-v="ejes">Ejes</button>
+        </div>
+        <p class="sub" id="modoNota" style="margin:0"></p>
+      </div>
+    </aside>
+
+    <main>
+      <div id="alert" class="alert" hidden></div>
+
+      <div class="sheet">
+        <div class="sheet-bar">
+          <span id="sheetL">Elevación</span>
+          <span>Escala <b id="sheetE">—</b></span>
+        </div>
+        <div class="canvas"><div id="dwg"></div></div>
+      </div>
+
+      <div class="figs" id="figs"></div>
+
+      <section>
+        <h2>Ejes de junta</h2>
+        <p class="sub" id="ejeNote"></p>
+        <div class="tw"><table id="tEje"></table></div>
+      </section>
+
+      <section>
+        <h2>Lista de corte</h2>
+        <p class="sub" id="cutNote"></p>
+        <div class="tw"><table id="tCut"></table></div>
+      </section>
+
+
+      <section>
+        <h2>Trazado del corte</h2>
+        <p class="sub">En el taller no se mide el &aacute;ngulo. El corte queda definido por dos marcas sobre los cantos del perfil, corridas entre s&iacute; una distancia fija: se unen con regla y se pasa el esmeril.</p>
+        <div class="cutgrid">
+          <div>
+            <div class="plate">
+              <p class="plate-t">Trozo de diagonal &middot; vista del ala</p>
+              <div id="dwgBlank"></div>
+            </div>
+            <div class="plate">
+              <p class="plate-t">Detalle del corte &middot; escala ampliada</p>
+              <div id="dwgCorner"></div>
+            </div>
+          </div>
+          <div>
+            <div class="plate">
+              <p class="plate-t">C&oacute;mo trazarlo</p>
+              <ol class="steps" id="steps"></ol>
+            </div>
+            <div class="plate">
+              <p class="plate-t">Tri&aacute;ngulo del corte</p>
+              <p class="sub" style="margin:-2px 0 12px">Cambia cualquiera de los cuatro y los otros se acomodan. Sirve para cualquier perfil, no solo para esta viga.</p>
+              <div class="solver">
+                <div class="field"><label for="svC">Ancho del ala <span class="u raw">c &middot; mm</span></label><input type="number" id="svC" step="1" min="1"></div>
+                <div class="field"><label for="svAl">&Aacute;ngulo <span class="u raw">&alpha; &middot; grados</span></label><input type="number" id="svAl" step="0.01" min="1" max="89"></div>
+                <div class="field"><label for="svB">Desfase <span class="u raw">b &middot; mm</span></label><input type="number" id="svB" step="0.1" min="0.1"></div>
+                <div class="field"><label for="svA">Largo del corte <span class="u raw">a &middot; mm</span></label><input type="number" id="svA" step="0.1"></div>
+                <button type="button" class="linkbtn" id="svViga">Tomar de la viga</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <dl class="yield" id="yield"></dl>
+      </section>
+
+      <section>
+        <h2>Marcado sobre el canal</h2>
+        <p class="sub">Distancias medidas desde el extremo izquierdo de la viga, sobre el ala del canal. Cada perfil queda entre su marca de inicio y la de término.</p>
+        <div class="pair">
+          <div class="tw"><table id="tSup"></table></div>
+          <div class="tw"><table id="tInf"></table></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Material</h2>
+        <dl class="sum" id="sum"></dl>
+      </section>
+
+      <details>
+        <summary>Supuestos de cálculo</summary>
+        <ul>
+          <li>El alto y el largo son medidas <b>exteriores</b>, de alma a alma del canal. Montantes y diagonales entran dentro del canal hasta tocar el alma, así que su largo de corte es el alto total menos la holgura.</li>
+          <li>En la elevación se ve el <b>ala</b> de cada perfil: 38&nbsp;mm en el montante y 25&nbsp;mm en el canal son los valores Metalcon corrientes (también hay canales de 20). El tramo del perfil que queda escondido tras el ala del canal se dibuja con línea segmentada.</li>
+          <li>Las diagonales se cortan con ambos extremos <b>paralelos al canal</b>, no en escuadra. Por eso el trozo sale en paralelogramo: los dos cantos miden lo mismo y quedan corridos entre sí una distancia igual al <code>desfase</code>.</li>
+          <li>El <b>eje de junta</b> es el punto exacto donde topan dos perfiles. Da igual el criterio de nodo y el ángulo: siempre quedan equiespaciados, así que es la medida que conviene replantear con huincha corrida sobre el canal. En zig-zag van alternando entre canal superior e inferior; en Pratt coinciden con el eje de cada montante.</li>
+          <li>Criterio <b>a tope</b>: cada perfil topa con el vecino en el nodo, sin montarse. Es el trazado que se replantea en el taller y el que ajusta el ángulo para que la suma de huellas dé exacto el largo pedido.</li>
+          <li>Criterio <b>ejes</b>: los ejes de los perfiles concurren en las divisiones teóricas. Sirve para comparar con un plano de cálculo, pero en obra los perfiles se montan unos milímetros.</li>
+          <li>Con un número impar de divisiones y diagonales simétricas, el paño central toma la dirección de la mitad izquierda.</li>
+          <li>Esto resuelve la <b>geometría</b> del despiece. El dimensionamiento estructural —espesor de lámina, altura de alma, cantidad de tornillos por nodo— es otra pega.</li>
+        </ul>
+      </details>
+
+      <p class="foot" id="foot"></p>
+
+      <section class="export">
+        <h2>Exportar el dibujo</h2>
+        <p class="sub">DXF lleva la geometr&iacute;a real en mil&iacute;metros, por capas: PERFILES, CANAL, EJES, MARCAS y TEXTO. SVG sirve para pegarlo en un informe o abrirlo en Illustrator o Inkscape.</p>
+        <div class="exbtns">
+          <button type="button" class="exbtn" id="exDxf">Copiar DXF</button>
+          <button type="button" class="exbtn" id="exSvg">Copiar SVG</button>
+        </div>
+        <p class="exhint" id="exHint">El visor de esta p&aacute;gina no deja descargar archivos, as&iacute; que el bot&oacute;n copia el contenido al portapapeles: lo pegas en el Bloc de notas y lo guardas con la extensi&oacute;n que corresponda.</p>
+        <details class="exbox" id="exBox" hidden>
+          <summary>Contenido de <span id="exName">viga.dxf</span></summary>
+          <textarea id="exTa" readonly spellcheck="false"></textarea>
+        </details>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var K = 1000; // m -> mm
+
+  var S = {tipo:'zigzag', modo:'tope', first:'baja', pratDir:'sim',
+           L:2.62, H:0.60, n:5, a:38, c:25, hol:0, tira:6, v:2};
+  var SV={c:38, al:52.475}, svTouched=false;
+
+  try{
+    var saved = JSON.parse(localStorage.getItem('celosia-metalcon') || 'null');
+    if(saved && typeof saved === 'object'){
+      if(saved.v !== S.v) delete saved.c;          // default de ala de canal actualizado a 25 mm
+      for(var k in S){ if(k in saved && k !== 'v') S[k] = saved[k]; }
+    }
+  }catch(e){}
+
+  function save(){ try{ localStorage.setItem('celosia-metalcon', JSON.stringify(S)); }catch(e){} }
+
+  /* ---------- formato ---------- */
+  function nf(v,d){ return v.toLocaleString('es-CL',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function MM(v,d){ return nf(v*K, d===undefined?1:d); }      // metros -> texto en mm
+  function M(v){ return nf(v,3); }
+  function AN(v){ return nf(v,2)+'°'; }
+
+  /* ---------- geometría ---------- */
+  function compute(s){
+    var L=s.L, H=s.H, n=Math.round(s.n), a=s.a/K, c=s.c/K, hol=s.hol/K;
+    if(!(L>0)||!(H>0)||!(n>=2)) return {err:'Revisa las medidas: el largo, el alto y las divisiones tienen que ser mayores que cero (mínimo 2 divisiones).'};
+    if(!(a>0)||!(c>0)) return {err:'El ala del montante y la del canal tienen que ser mayores que cero.'};
+    var Hm = H - hol;
+    if(2*c >= H) return {err:'Las dos alas del canal no caben en el alto total. Baja el ala del canal o sube el alto de la viga.'};
+    if(Hm <= 0) return {err:'La holgura de corte se comió el alto de la viga.'};
+
+    var base = (s.tipo==='zigzag') ? (L - 2*a)/n : (L - a)/n - a;
+    if(base <= 0.005) return {err:'Con '+n+' divisiones no queda espacio para las diagonales. Reduce las divisiones o alarga la viga.'};
+
+    var th, w, r;
+    if(s.modo==='ejes'){
+      r = base; th = Math.atan2(Hm, r); w = a/Math.sin(th);
+    }else{
+      th = Math.atan2(Hm, base);
+      for(var i=0;i<120;i++){
+        w = a/Math.sin(th);
+        r = base - w;
+        if(r <= 0.005) return {err:'Con '+n+' divisiones las diagonales quedan casi verticales y no cabe el ancho del perfil. Usa menos divisiones.'};
+        th = Math.atan2(Hm, r);
+      }
+      w = a/Math.sin(th); r = base - w;
+    }
+
+    var Ld = Hm/Math.sin(th);
+    var desf = a/Math.tan(th);
+    var q = (L - a)/n;
+    var mem = [];
+    function mont(id,cx){ return {id:id,kind:'M',topC:cx,botC:cx,hw:a/2,len:Hm,ang:90}; }
+    function diag(id,t,b){ return {id:id,kind:'D',topC:t,botC:b,hw:w/2,len:Ld,ang:th*180/Math.PI}; }
+
+    if(s.tipo==='zigzag'){
+      mem.push(mont('M1', a/2));
+      var cur = a + (s.modo==='tope' ? w/2 : 0);
+      var top = (s.first !== 'sube');
+      for(var k=1;k<=n;k++){
+        var c1=cur, c2=cur+r;
+        mem.push(diag('D'+k, top?c1:c2, top?c2:c1));
+        cur = c2 + (s.modo==='tope' ? w : 0);
+        top = !top;
+      }
+      mem.push(mont('M2', L - a/2));
+    }else{
+      for(var i2=0;i2<=n;i2++) mem.push(mont('M'+(i2+1), a/2 + i2*q));
+      for(var k2=1;k2<=n;k2++){
+        var uA = a/2 + (k2-1)*q, uB = a/2 + k2*q;
+        var off = (s.modo==='tope') ? (a/2 + w/2) : 0;
+        var d1 = uA + off, d2 = uB - off;
+        var down = (s.pratDir==='par') ? true : (k2 <= Math.ceil(n/2));
+        mem.push(diag('D'+k2, down?d1:d2, down?d2:d1));
+      }
+    }
+
+    var monts = mem.filter(function(m){return m.kind==='M';});
+    var diags = mem.filter(function(m){return m.kind==='D';});
+    var fp = function(chord){
+      return mem.map(function(m){
+        var ctr = chord==='sup' ? m.topC : m.botC;
+        return {id:m.id, kind:m.kind, x1:ctr-m.hw, x2:ctr+m.hw, c:ctr};
+      }).sort(function(x,y){return x.x1-y.x1;});
+    };
+
+    // ejes de nodo: donde topan dos perfiles. Siempre equiespaciados.
+    var paso = (s.tipo==='zigzag') ? (L - 2*a)/n : q;
+    var nodes = [];
+    for(var i3=0;i3<=n;i3++){
+      var nx, chord, pcs;
+      if(s.tipo==='zigzag'){
+        nx = a + i3*paso;
+        var arriba = (s.first!=='sube') ? (i3%2===0) : (i3%2!==0);
+        chord = arriba ? 'Superior' : 'Inferior';
+        pcs = (i3===0) ? ['M1','D1'] : (i3===n ? ['D'+n,'M2'] : ['D'+i3,'D'+(i3+1)]);
+      }else{
+        nx = a/2 + i3*paso;
+        chord = 'Ambos';
+        pcs = ['M'+(i3+1)];
+        if(i3>=1) pcs.push('D'+i3);
+        if(i3<n) pcs.push('D'+(i3+1));
+      }
+      nodes.push({i:i3+1, x:nx, chord:chord, pcs:pcs});
+    }
+    var borde = (s.tipo==='zigzag') ? a : a/2;
+
+    return {L:L,H:H,n:n,a:a,c:c,Hm:Hm,r:r,th:th,thd:th*180/Math.PI,w:w,Ld:Ld,desf:desf,q:q,
+            mem:mem,monts:monts,diags:diags,sup:fp('sup'),inf:fp('inf'),
+            nodes:nodes,paso:paso,borde:borde,
+            libre:q-a, clear:H-2*c};
+  }
+
+  /* ---------- dibujo ---------- */
+  function tick(x,y,ang){
+    var t=42, dx=Math.cos(ang)*t/2, dy=Math.sin(ang)*t/2;
+    return '<line class="dim" x1="'+(x-dx).toFixed(1)+'" y1="'+(y-dy).toFixed(1)+'" x2="'+(x+dx).toFixed(1)+'" y2="'+(y+dy).toFixed(1)+'"/>';
+  }
+
+  function draw(R,s){
+    var L=R.L*K, H=R.H*K, c=R.c*K;
+    var ml=310, mr=150, mt=400, mb=480;
+    var W=L+ml+mr, HH=H+mt+mb;
+    var g=[];
+
+    // cordones (canal) — se dibujan después de los perfiles, pero reservamos el clip
+    g.push('<defs><clipPath id="cpChord"><rect x="0" y="0" width="'+L+'" height="'+c+'"/>'+
+           '<rect x="0" y="'+(H-c)+'" width="'+L+'" height="'+c+'"/></clipPath></defs>');
+
+    // ejes de nodo
+    R.nodes.forEach(function(nd){
+      var nx=(nd.x*K).toFixed(1);
+      g.push('<line class="axis" x1="'+nx+'" y1="-72" x2="'+nx+'" y2="'+(H+110)+'"/>');
+    });
+
+    // perfiles completos
+    function poly(m){
+      var t1=(m.topC-m.hw)*K, t2=(m.topC+m.hw)*K, b1=(m.botC-m.hw)*K, b2=(m.botC+m.hw)*K;
+      return t1.toFixed(1)+',0 '+t2.toFixed(1)+',0 '+b2.toFixed(1)+','+H+' '+b1.toFixed(1)+','+H;
+    }
+    R.mem.forEach(function(m){ g.push('<polygon class="member" points="'+poly(m)+'"/>'); });
+
+    // cordones tapando el tramo escondido
+    g.push('<rect class="chord" x="0" y="0" width="'+L+'" height="'+c+'"/>');
+    g.push('<rect class="chord" x="0" y="'+(H-c)+'" width="'+L+'" height="'+c+'"/>');
+
+    // línea segmentada de lo escondido
+    g.push('<g clip-path="url(#cpChord)">');
+    R.mem.forEach(function(m){ g.push('<polygon class="ghost" points="'+poly(m)+'"/>'); });
+    g.push('</g>');
+
+    // rótulos de pieza
+    R.mem.forEach(function(m){
+      var cx=((m.topC+m.botC)/2)*K;
+      g.push('<text class="lbl" x="'+cx.toFixed(1)+'" y="'+(H/2+16)+'" font-size="46" text-anchor="middle">'+m.id+'</text>');
+    });
+
+    // burbujas de eje (arriba)
+    R.nodes.forEach(function(nd){
+      var nx=(nd.x*K).toFixed(1);
+      g.push('<circle class="bub" cx="'+nx+'" cy="-138" r="52"/>');
+      g.push('<text class="bubt" x="'+nx+'" y="-120" font-size="50" text-anchor="middle">'+nd.i+'</text>');
+    });
+
+    // cota total (arriba)
+    var yT=-290;
+    g.push('<line class="dimx" x1="0" y1="-30" x2="0" y2="'+(yT-34)+'"/>');
+    g.push('<line class="dimx" x1="'+L+'" y1="-30" x2="'+L+'" y2="'+(yT-34)+'"/>');
+    g.push('<line class="dim" x1="0" y1="'+yT+'" x2="'+L+'" y2="'+yT+'"/>');
+    g.push(tick(0,yT,-Math.PI/4)); g.push(tick(L,yT,-Math.PI/4));
+    g.push('<text class="dimt" x="'+(L/2)+'" y="'+(yT-24)+'" font-size="58" text-anchor="middle">'+M(R.L)+'</text>');
+
+    // cota de alto (izquierda)
+    var xT=-160;
+    g.push('<line class="dimx" x1="-30" y1="0" x2="'+(xT-34)+'" y2="0"/>');
+    g.push('<line class="dimx" x1="-30" y1="'+H+'" x2="'+(xT-34)+'" y2="'+H+'"/>');
+    g.push('<line class="dim" x1="'+xT+'" y1="0" x2="'+xT+'" y2="'+H+'"/>');
+    g.push(tick(xT,0,-Math.PI/4)); g.push(tick(xT,H,-Math.PI/4));
+    g.push('<text class="dimt" x="'+(xT-26)+'" y="'+(H/2)+'" font-size="58" text-anchor="middle" transform="rotate(-90 '+(xT-26)+' '+(H/2)+')">'+M(R.H)+'</text>');
+
+    // cadena de ejes de nodo
+    var yC=H+235, pts=[0];
+    R.nodes.forEach(function(nd){ pts.push(nd.x*K); });
+    pts.push(L);
+    g.push('<line class="dim" x1="0" y1="'+yC+'" x2="'+L+'" y2="'+yC+'"/>');
+    for(var i=0;i<pts.length;i++){
+      g.push('<line class="dimx" x1="'+pts[i].toFixed(1)+'" y1="'+(H+60)+'" x2="'+pts[i].toFixed(1)+'" y2="'+(yC+34)+'"/>');
+      g.push(tick(pts[i],yC,-Math.PI/4));
+      if(i>0){
+        var d=pts[i]-pts[i-1], mid=(pts[i]+pts[i-1])/2;
+        if(d>300) g.push('<text class="dimt" x="'+mid.toFixed(1)+'" y="'+(yC-24)+'" font-size="50" text-anchor="middle">'+nf(d,1)+'</text>');
+        else g.push('<text class="dimt" x="'+mid.toFixed(1)+'" y="'+(yC+108)+'" font-size="42" text-anchor="middle" transform="rotate(-90 '+mid.toFixed(1)+' '+(yC+108)+')">'+nf(d,1)+'</text>');
+      }
+    }
+    g.push('<text class="dimt" x="'+(L/2)+'" y="'+(yC+215)+'" font-size="40" text-anchor="middle" opacity=".85">EJES DE JUNTA · mm</text>');
+
+    return '<svg class="dwg" viewBox="'+(-ml)+' '+(-mt)+' '+W+' '+HH+'" role="img" '+
+           'aria-label="Elevación de la celosía con cotas">'+g.join('')+'</svg>';
+  }
+
+
+  /* ---------- trazado del corte ---------- */
+  function drawCorner(cmm, alDeg){
+    if(!(cmm>0) || !(alDeg>0.5) || !(alDeg<89.5)) return '';
+    var al=alDeg*Math.PI/180;
+    var bmm=cmm/Math.tan(al), amm=cmm/Math.sin(al);
+    var C=230, F=C/cmm, B=bmm*F;
+    var lead=95, tail=Math.max(215, B*0.5);
+    var x0=-lead, x1=B+tail;
+    var ml=200, mr=140, mt=150, mb=175;
+    var phi=Math.atan2(C,B), phd=phi*180/Math.PI, len=Math.sqrt(B*B+C*C);
+    var g=[];
+    g.push('<rect class="strip" x="'+x0+'" y="0" width="'+(x1-x0).toFixed(1)+'" height="'+C+'"/>');
+    g.push('<polygon class="piece" points="0,0 '+x1.toFixed(1)+',0 '+x1.toFixed(1)+','+C+' '+B.toFixed(1)+','+C+'"/>');
+    g.push('<line class="cutline" x1="0" y1="0" x2="'+B.toFixed(1)+'" y2="'+C+'"/>');
+
+    // cota c (ancho del ala)
+    var xc=x0-95;
+    g.push('<line class="dimx" x1="'+(x0-12)+'" y1="0" x2="'+(xc-30)+'" y2="0"/>');
+    g.push('<line class="dimx" x1="'+(x0-12)+'" y1="'+C+'" x2="'+(xc-30)+'" y2="'+C+'"/>');
+    g.push('<line class="dim" x1="'+xc+'" y1="0" x2="'+xc+'" y2="'+C+'"/>');
+    g.push(tick(xc,0,-Math.PI/4)); g.push(tick(xc,C,-Math.PI/4));
+    g.push('<text class="dimt" x="'+(xc-24)+'" y="'+(C/2)+'" font-size="36" text-anchor="middle" transform="rotate(-90 '+(xc-24)+' '+(C/2)+')">c = '+nf(cmm,2)+'</text>');
+
+    // cota b (desfase)
+    var yb=-92;
+    g.push('<line class="dimx" x1="0" y1="-14" x2="0" y2="'+(yb-30)+'"/>');
+    g.push('<line class="dimx" x1="'+B.toFixed(1)+'" y1="'+(C+8)+'" x2="'+B.toFixed(1)+'" y2="'+(yb-30)+'"/>');
+    g.push('<line class="dim" x1="0" y1="'+yb+'" x2="'+B.toFixed(1)+'" y2="'+yb+'"/>');
+    g.push(tick(0,yb,-Math.PI/4)); g.push(tick(B,yb,-Math.PI/4));
+    g.push('<text class="dimt" x="'+(B/2).toFixed(1)+'" y="'+(yb-26)+'" font-size="40" text-anchor="middle">b = '+nf(bmm,2)+'</text>');
+
+    // cota a (largo del corte) rotulada sobre la linea
+    var ox=-72*C/len, oy=72*B/len;
+    var mx=B/2+ox, my=C/2+oy;
+    g.push('<text class="dimt" x="'+mx.toFixed(1)+'" y="'+my.toFixed(1)+'" font-size="36" text-anchor="middle" transform="rotate('+phd.toFixed(2)+' '+mx.toFixed(1)+' '+my.toFixed(1)+')">a = '+nf(amm,2)+'</text>');
+
+    // arco del angulo
+    var Rr=92;
+    g.push('<path class="arc" d="M '+Rr+',0 A '+Rr+','+Rr+' 0 0,1 '+(Rr*Math.cos(phi)).toFixed(1)+','+(Rr*Math.sin(phi)).toFixed(1)+'"/>');
+    var lr=Rr+58, la=phi/2;
+    g.push('<text class="dimt" x="'+(lr*Math.cos(la)).toFixed(1)+'" y="'+(lr*Math.sin(la)+12).toFixed(1)+'" font-size="38" text-anchor="middle">'+nf(alDeg,2)+'°</text>');
+
+    g.push('<text class="edge" x="'+(x1-16).toFixed(1)+'" y="-26" font-size="32" text-anchor="end">CANTO A</text>');
+    g.push('<text class="edge" x="'+(x1-16).toFixed(1)+'" y="'+(C+44)+'" font-size="32" text-anchor="end">CANTO B</text>');
+    g.push('<text class="edge" x="'+(x0+14)+'" y="'+(C+44)+'" font-size="30">recorte</text>');
+
+    return '<svg class="dwg sm" viewBox="'+(x0-ml).toFixed(1)+' '+(-mt)+' '+((x1-x0)+ml+mr).toFixed(1)+' '+(C+mt+mb)+
+           '" role="img" aria-label="Detalle del corte de la diagonal">'+g.join('')+'</svg>';
+  }
+
+  function drawBlank(R){
+    var cmm=R.a*K, Ld=R.Ld*K, b=R.desf*K, Lb=Ld+b;
+    var F=3, C=cmm*F, SEG=150*F, GAP=140;
+    var brk=(Lb*F > 2*SEG+160);
+    var W0=brk ? (2*SEG+GAP) : Lb*F;
+    function X(u){ return (!brk || u*F<=SEG) ? u*F : (SEG+GAP+(u*F-(Lb*F-SEG))); }
+    var ml=430, mr=190, mt=215, mb=215;
+    var g=[];
+    g.push('<defs><clipPath id="cpBl">');
+    if(brk){
+      g.push('<rect x="-90" y="-8" width="'+(SEG+92)+'" height="'+(C+16)+'"/>');
+      g.push('<rect x="'+(SEG+GAP)+'" y="-8" width="'+(SEG+90)+'" height="'+(C+16)+'"/>');
+    }else{
+      g.push('<rect x="-90" y="-8" width="'+(W0+180)+'" height="'+(C+16)+'"/>');
+    }
+    g.push('</clipPath></defs>');
+
+    g.push('<g clip-path="url(#cpBl)">');
+    g.push('<rect class="strip" x="-80" y="0" width="'+(W0+160)+'" height="'+C+'"/>');
+    g.push('<polygon class="piece" points="'+X(0).toFixed(1)+',0 '+X(Ld).toFixed(1)+',0 '+X(Lb).toFixed(1)+','+C+' '+X(b).toFixed(1)+','+C+'"/>');
+    g.push('<line class="cutline" x1="'+X(0).toFixed(1)+'" y1="0" x2="'+X(b).toFixed(1)+'" y2="'+C+'"/>');
+    g.push('<line class="cutline" x1="'+X(Ld).toFixed(1)+'" y1="0" x2="'+X(Lb).toFixed(1)+'" y2="'+C+'"/>');
+    g.push('</g>');
+
+    if(brk){
+      [SEG, SEG+GAP].forEach(function(bx){
+        g.push('<path class="brk" d="M '+bx+',-14 L '+(bx+20)+','+(C*0.3).toFixed(0)+' L '+(bx-16)+','+(C*0.55).toFixed(0)+' L '+(bx+18)+','+(C*0.8).toFixed(0)+' L '+bx+','+(C+14)+'"/>');
+      });
+    }
+
+    // marcas
+    function mark(x,arriba,txt){
+      if(arriba){
+        g.push('<line class="dimx" x1="'+x.toFixed(1)+'" y1="-10" x2="'+x.toFixed(1)+'" y2="-52"/>');
+        g.push('<text class="dimt" x="'+x.toFixed(1)+'" y="-68" font-size="56" text-anchor="middle">'+txt+'</text>');
+      }else{
+        g.push('<line class="dimx" x1="'+x.toFixed(1)+'" y1="'+(C+10)+'" x2="'+x.toFixed(1)+'" y2="'+(C+52)+'"/>');
+        g.push('<text class="dimt" x="'+x.toFixed(1)+'" y="'+(C+106)+'" font-size="56" text-anchor="middle">'+txt+'</text>');
+      }
+    }
+    mark(X(0),true,'0'); mark(X(Ld),true,nf(Ld,2));
+    mark(X(b),false,nf(b,2)); mark(X(Lb),false,nf(Lb,2));
+
+    g.push('<text class="edge" x="-105" y="-68" font-size="46" text-anchor="end">CANTO A</text>');
+    g.push('<text class="edge" x="-105" y="'+(C+106)+'" font-size="46" text-anchor="end">CANTO B</text>');
+
+    // cota total del trozo
+    var yd=C+185;
+    g.push('<line class="dim" x1="'+X(0).toFixed(1)+'" y1="'+yd+'" x2="'+X(Lb).toFixed(1)+'" y2="'+yd+'"/>');
+    g.push(tick(X(0),yd,-Math.PI/4)); g.push(tick(X(Lb),yd,-Math.PI/4));
+    g.push('<text class="dimt" x="'+(W0/2).toFixed(1)+'" y="'+(yd-24)+'" font-size="50" text-anchor="middle">trozo bruto '+nf(Lb,2)+' mm</text>');
+
+    return '<svg class="dwg sm" viewBox="'+(-ml)+' '+(-mt)+' '+(W0+ml+mr).toFixed(1)+' '+(C+mt+mb)+
+           '" role="img" aria-label="Trozo de diagonal con sus marcas de corte">'+g.join('')+'</svg>';
+  }
+
+  function renderSolver(skip){
+    var c=SV.c, al=SV.al;
+    var b=c/Math.tan(al*Math.PI/180), a=c/Math.sin(al*Math.PI/180);
+    var set=function(id,v,d){ var el=document.getElementById(id); if(id!==skip) el.value=v.toFixed(d); };
+    set('svC',c,2); set('svAl',al,2); set('svB',b,2); set('svA',a,2);
+    document.getElementById('dwgCorner').innerHTML=drawCorner(c,al);
+  }
+
+  /* ---------- render ---------- */
+  function segSet(id,val){
+    var el=document.getElementById(id);
+    Array.prototype.forEach.call(el.querySelectorAll('button'),function(b){
+      b.setAttribute('aria-pressed', b.dataset.v===val ? 'true':'false');
+    });
+  }
+
+  function rows(list,titulo){
+    var h='<thead><tr><th>'+titulo+'</th><th>Desde</th><th>Hasta</th><th>Centro</th></tr></thead><tbody>';
+    list.forEach(function(f){
+      h+='<tr><td class="id"><span class="tag'+(f.kind==='M'?' m':'')+'">'+f.id+'</span></td>'+
+         '<td class="n">'+MM(f.x1)+'</td><td class="n">'+MM(f.x2)+'</td><td class="n">'+MM(f.c)+'</td></tr>';
+    });
+    return h+'</tbody>';
+  }
+
+  function render(){
+    document.getElementById('segFirst').hidden = (S.tipo!=='zigzag');
+    document.getElementById('segPrat').hidden  = (S.tipo!=='pratt');
+    segSet('segTipo',S.tipo); segSet('segModo',S.modo);
+    segSet('segFirst',S.first); segSet('segPrat',S.pratDir);
+    document.getElementById('modoNota').textContent = (S.modo==='tope')
+      ? 'Los perfiles topan entre sí en cada nodo. Es el trazado de taller.'
+      : 'Los ejes concurren en la división teórica; los perfiles se montan en el nodo.';
+
+    var R = compute(S);
+    var al = document.getElementById('alert');
+    if(R.err){
+      al.hidden=false; al.textContent=R.err;
+      document.getElementById('dwg').innerHTML='';
+      document.getElementById('figs').innerHTML='';
+      document.getElementById('tCut').innerHTML='';
+      document.getElementById('tEje').innerHTML='';
+      document.getElementById('dwgBlank').innerHTML='';
+      document.getElementById('dwgCorner').innerHTML='';
+      document.getElementById('steps').innerHTML='';
+      document.getElementById('yield').innerHTML='';
+      document.getElementById('ejeNote').textContent='';
+      document.getElementById('tSup').innerHTML='';
+      document.getElementById('tInf').innerHTML='';
+      document.getElementById('sum').innerHTML='';
+      document.getElementById('foot').textContent='';
+      return;
+    }
+    al.hidden=true;
+
+    document.getElementById('sheetL').textContent =
+      (S.tipo==='zigzag'?'Celosía zig-zag':'Celosía Pratt')+' · '+R.n+' divisiones · '+
+      (S.modo==='tope'?'perfiles a tope':'ejes teóricos');
+    document.getElementById('sheetE').textContent = 'variable · cotas en mm';
+
+    document.getElementById('dwg').innerHTML = draw(R,S);
+
+    document.getElementById('figs').innerHTML =
+      fig('Desfase del corte', MM(R.desf,2)+' mm', 'α = '+AN(R.thd)+' · corte de '+MM(R.w,2)+' mm', true)+
+      fig('Corte diagonal', MM(R.Ld,2)+' mm', 'sobre cada canto', true)+
+      fig('Corte montante', MM(R.Hm)+' mm', 'a escuadra, ambos extremos')+
+      fig('Paso entre ejes', MM(R.paso)+' mm', 'igual en toda la viga', true);
+
+    // lista de corte
+    var nM=R.monts.length, nD=R.diags.length;
+    function crow(tag,perfil,cant,largo,ang,desf,bruto,mont){
+      return '<tr><td class="id"><span class="tag'+(mont?' m':'')+'">'+tag+'</span>'+
+             '<span style="color:var(--muted);font-family:var(--sans);font-size:12.5px;margin-left:8px">'+perfil+'</span></td>'+
+             '<td class="n">'+cant+'</td><td class="n">'+largo+'</td><td class="n">'+ang+'</td>'+
+             '<td class="n">'+desf+'</td><td class="n">'+bruto+'</td></tr>';
+    }
+    var cut='<thead><tr><th>Pieza</th><th>Cant.</th><th>Largo de corte</th><th>Ángulo</th><th>Desfase</th><th>Trozo bruto</th></tr></thead><tbody>'+
+      crow('Montante','ala '+nf(S.a,0)+' mm',nM,MM(R.Hm)+' mm','90,00°','—',MM(R.Hm)+' mm',true)+
+      crow('Diagonal','ala '+nf(S.a,0)+' mm',nD,MM(R.Ld)+' mm',AN(R.thd),MM(R.desf)+' mm',MM(R.Ld+R.desf)+' mm',false)+
+      crow('Cordón','canal ala '+nf(S.c,0)+' mm',2,MM(R.L)+' mm','90,00°','—',MM(R.L)+' mm',true)+
+      '</tbody>';
+    document.getElementById('tCut').innerHTML=cut;
+
+    // ejes de junta
+    var eje='<thead><tr><th>Eje</th><th>Cordón</th><th>Desde el extremo</th><th>Paso</th><th>Concurren</th></tr></thead><tbody>';
+    R.nodes.forEach(function(nd,ix){
+      eje+='<tr><td class="id"><span class="tag m">'+nd.i+'</span></td><td>'+nd.chord+'</td>'+
+           '<td class="n">'+MM(nd.x)+' mm</td>'+
+           '<td class="n">'+(ix===0 ? '—' : MM(nd.x-R.nodes[ix-1].x)+' mm')+'</td>'+
+           '<td style="text-align:left;font-family:var(--mono);font-size:13px">'+nd.pcs.join(' · ')+'</td></tr>';
+    });
+    document.getElementById('tEje').innerHTML=eje+'</tbody>';
+    document.getElementById('ejeNote').textContent =
+      (S.tipo==='zigzag'
+        ? 'Punto exacto donde topan dos diagonales. Van alternando entre canal superior e inferior y quedan equiespaciados cada '+MM(R.paso)+' mm; el primero y el último caen a '+MM(R.borde)+' mm del extremo de la viga.'
+        : 'Eje de cada montante. Quedan equiespaciados cada '+MM(R.paso)+' mm, con el primero y el último a '+MM(R.borde)+' mm del extremo; las diagonales topan contra las caras del montante, a '+MM(R.a/2)+' mm de su eje.');
+    document.getElementById('cutNote').textContent =
+      'Los dos extremos de la diagonal se cortan paralelos al canal, a '+AN(R.thd)+' del canto. '+
+      'El trozo sale en paralelogramo: ambos cantos miden '+MM(R.Ld)+' mm y quedan corridos '+MM(R.desf)+' mm entre sí.';
+
+    // trazado del corte
+    document.getElementById('dwgBlank').innerHTML = drawBlank(R);
+    if(!svTouched){ SV.c = S.a; SV.al = R.thd; }
+    renderSolver(null);
+
+    var pasos=[
+      'Corta un trozo de al menos <b>'+MM(R.Ld+R.desf,2)+' mm</b> y elige un canto como <b>A</b>.',
+      'Sobre el canto A marca, desde la punta: <b>0</b> y <b>'+MM(R.Ld,2)+' mm</b>.',
+      'Sobre el canto B corre todo el desfase: marca <b>'+MM(R.desf,2)+'</b> y <b>'+MM(R.Ld+R.desf,2)+' mm</b>.',
+      'Une 0 con '+MM(R.desf,2)+', y '+MM(R.Ld,2)+' con '+MM(R.Ld+R.desf,2)+'. Las dos l&iacute;neas quedan paralelas; no hace falta transportador.',
+      'Pasa el esmeril sobre esas l&iacute;neas: cada corte cruza el ala en <b>'+MM(R.w,2)+' mm</b>.'
+    ];
+    document.getElementById('steps').innerHTML = pasos.map(function(t){return '<li>'+t+'</li>';}).join('');
+
+    // rendimiento por tira
+    var tira=S.tira*1000;
+    var dxT = Math.max(0, Math.floor((tira - R.desf*K)/(R.Ld*K)));
+    var mxT = Math.max(0, Math.floor(tira/(R.Hm*K)));
+    var cxT = Math.max(0, Math.floor(tira/(R.L*K)));
+    var tirasCA = (dxT?Math.ceil(nD/dxT):0) + (mxT?Math.ceil(nM/mxT):0);
+    document.getElementById('yield').innerHTML =
+      dt('Diagonales por tira', dxT+'', 'encadenadas, tira de '+nf(S.tira,2)+' m')+
+      dt('Montantes por tira', mxT+'', 'corte recto')+
+      dt('Tiras de perfil CA', tirasCA+'', nD+' diagonales + '+nM+' montantes')+
+      dt('Tiras de canal', (cxT?Math.ceil(2/cxT):'—')+'', '2 cordones de '+M(R.L)+' m');
+
+    document.getElementById('tSup').innerHTML = rows(R.sup,'Canal superior');
+    document.getElementById('tInf').innerHTML = rows(R.inf,'Canal inferior');
+
+    var mlM = nM*R.Hm, mlD = nD*R.Ld, mlC = 2*R.L;
+    document.getElementById('sum').innerHTML =
+      dt('Perfil montante',M(mlM)+' m', nM+' piezas')+
+      dt('Perfil diagonal',M(mlD)+' m', nD+' piezas')+
+      dt('Canal cordón',M(mlC)+' m','2 piezas de '+M(R.L)+' m')+
+      dt('Total perfil CA',M(mlM+mlD)+' m','montantes + diagonales')+
+      dt('Puntos de fijación',(nM+nD)*2+'','2 por pieza, uno en cada canal');
+
+    var extra = (S.tipo==='pratt')
+      ? 'Luz libre entre montantes '+MM(R.libre)+' mm.'
+      : 'Entre dos ejes de junta del mismo canal hay '+MM(2*R.paso)+' mm.';
+    document.getElementById('foot').textContent =
+      extra+' Carrera horizontal de cada diagonal '+MM(R.r)+' mm. Altura libre entre alas de canal '+MM(R.clear)+' mm.';
+
+    save();
+  }
+
+  function fig(k,v,s,hero){
+    return '<div class="fig'+(hero?' hero':'')+'"><span class="k">'+k+'</span><span class="v">'+v+'</span><span class="s">'+s+'</span></div>';
+  }
+  function dt(k,v,s){
+    return '<div><dt>'+k+'</dt><dd>'+v+'</dd><dd style="font-family:var(--sans);font-size:12.5px;color:var(--muted)">'+s+'</dd></div>';
+  }
+
+  /* ---------- eventos ---------- */
+  [['segTipo','tipo'],['segModo','modo'],['segFirst','first'],['segPrat','pratDir']].forEach(function(p){
+    document.getElementById(p[0]).addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      S[p[1]]=b.dataset.v; render();
+    });
+  });
+  [['iL','L'],['iH','H'],['iN','n'],['iA','a'],['iC','c'],['iZ','hol'],['iT','tira']].forEach(function(p){
+    var el=document.getElementById(p[0]);
+    el.value=S[p[1]];
+    el.addEventListener('input',function(){
+      var v=parseFloat(el.value);
+      if(!isNaN(v)){ S[p[1]]= p[1]==='n' ? Math.max(2,Math.min(16,Math.round(v))) : v; render(); }
+    });
+  });
+
+  // solver del triangulo de corte
+  function svApply(id, v){
+    svTouched=true;
+    if(id==='svC'){ if(v>0) SV.c=v; }
+    else if(id==='svAl'){ if(v>0.5&&v<89.5) SV.al=v; }
+    else if(id==='svB'){ if(v>0) SV.al=Math.atan(SV.c/v)*180/Math.PI; }
+    else if(id==='svA'){ if(v>SV.c) SV.al=Math.asin(SV.c/v)*180/Math.PI; }
+    renderSolver(id);
+  }
+  ['svC','svAl','svB','svA'].forEach(function(id){
+    var el=document.getElementById(id);
+    el.addEventListener('input',function(){ var v=parseFloat(el.value); if(!isNaN(v)) svApply(id,v); });
+    el.addEventListener('blur',function(){ renderSolver(null); });
+  });
+  document.getElementById('svViga').addEventListener('click',function(){ svTouched=false; render(); });
+
+  /* ---------- exportar ---------- */
+  function toDXF(R,S){
+    var L=R.L*K, H=R.H*K, c=R.c*K, b=[];
+    function g(code,v){ b.push(String(code)); b.push(String(v)); }
+    function n(v){ return (Math.round(v*1e6)/1e6).toString(); }
+    function poly(layer,pts){
+      g(0,'POLYLINE'); g(8,layer); g(66,1); g(70,1); g(10,0); g(20,0); g(30,0);
+      pts.forEach(function(q){ g(0,'VERTEX'); g(8,layer); g(10,n(q[0])); g(20,n(q[1])); g(30,0); });
+      g(0,'SEQEND'); g(8,layer);
+    }
+    function line(layer,x1,y1,x2,y2){
+      g(0,'LINE'); g(8,layer); g(10,n(x1)); g(20,n(y1)); g(30,0); g(11,n(x2)); g(21,n(y2)); g(31,0);
+    }
+    function txt(layer,x,y,h,str){
+      g(0,'TEXT'); g(8,layer); g(10,n(x)); g(20,n(y)); g(30,0); g(40,n(h)); g(1,str);
+      g(72,1); g(11,n(x)); g(21,n(y)); g(31,0);
+    }
+    function pnt(layer,x,y){ g(0,'POINT'); g(8,layer); g(10,n(x)); g(20,n(y)); g(30,0); }
+
+    g(0,'SECTION'); g(2,'HEADER');
+    g(9,'$ACADVER'); g(1,'AC1009');
+    g(9,'$INSUNITS'); g(70,4);
+    g(9,'$EXTMIN'); g(10,-200); g(20,-300); g(30,0);
+    g(9,'$EXTMAX'); g(10,n(L+200)); g(20,n(H+300)); g(30,0);
+    g(0,'ENDSEC');
+
+    var caps=[['PERFILES',7],['CANAL',4],['EJES',2],['MARCAS',1],['TEXTO',3]];
+    g(0,'SECTION'); g(2,'TABLES'); g(0,'TABLE'); g(2,'LAYER'); g(70,caps.length);
+    caps.forEach(function(l){ g(0,'LAYER'); g(2,l[0]); g(70,0); g(62,l[1]); g(6,'CONTINUOUS'); });
+    g(0,'ENDTAB'); g(0,'ENDSEC');
+
+    g(0,'SECTION'); g(2,'ENTITIES');
+    poly('CANAL',[[0,H],[L,H],[L,H-c],[0,H-c]]);
+    poly('CANAL',[[0,0],[L,0],[L,c],[0,c]]);
+    R.mem.forEach(function(m){
+      poly('PERFILES',[[(m.topC-m.hw)*K,H],[(m.topC+m.hw)*K,H],[(m.botC+m.hw)*K,0],[(m.botC-m.hw)*K,0]]);
+      txt('TEXTO',((m.topC+m.botC)/2)*K, H/2, 32, m.id);
+    });
+    R.nodes.forEach(function(nd){
+      line('EJES', nd.x*K, -90, nd.x*K, H+90);
+      txt('TEXTO', nd.x*K, H+140, 32, 'EJE '+nd.i);
+    });
+    R.sup.forEach(function(f){ pnt('MARCAS',f.x1*K,H); pnt('MARCAS',f.x2*K,H); });
+    R.inf.forEach(function(f){ pnt('MARCAS',f.x1*K,0); pnt('MARCAS',f.x2*K,0); });
+
+    txt('TEXTO', L/2, H+250, 46,
+      (S.tipo==='zigzag'?'CELOSIA ZIG-ZAG':'CELOSIA PRATT')+' '+n(L)+'x'+n(H)+' - '+R.n+' DIVISIONES');
+    txt('TEXTO', L/2, H+195, 34,
+      'ALA '+nf(S.a,0)+' - CANAL '+nf(S.c,0)+' - ALFA '+nf(R.thd,2)+' - DIAGONAL '+nf(R.Ld*K,2)+
+      ' - DESFASE '+nf(R.desf*K,2)+' - PASO '+nf(R.paso*K,2));
+    g(0,'ENDSEC'); g(0,'EOF');
+    return b.join('\r\n')+'\r\n';
+  }
+
+  function toSVG(){
+    var src=document.querySelector('#dwg svg');
+    if(!src) return '';
+    var cs=getComputedStyle(document.documentElement);
+    function v(nm,fb){ var x=cs.getPropertyValue(nm).trim(); return x||fb; }
+    var F="'Barlow Condensed',sans-serif";
+    var vb=(src.getAttribute('viewBox')||'0 0 100 100').split(/\s+/).map(Number);
+    var css='<style>'+
+      '.member{fill:'+v('--steel-fill','#eee')+';stroke:'+v('--steel','#456')+';stroke-width:4;stroke-linejoin:round}'+
+      '.ghost{fill:none;stroke:'+v('--steel','#456')+';stroke-width:3;stroke-dasharray:24 16;opacity:.5}'+
+      '.chord{fill:'+v('--surface','#fff')+';stroke:'+v('--steel','#456')+';stroke-width:4}'+
+      '.axis{stroke:'+v('--rule','#aaa')+';stroke-width:2.5;stroke-dasharray:70 22 8 22;opacity:.75;fill:none}'+
+      '.dim{stroke:'+v('--accent','#c33')+';stroke-width:3.2;fill:none}'+
+      '.dimx{stroke:'+v('--accent','#c33')+';stroke-width:2;opacity:.5;fill:none}'+
+      '.dimt{fill:'+v('--accent','#c33')+';font-family:'+F+';font-weight:600}'+
+      '.bub{fill:'+v('--surface','#fff')+';stroke:'+v('--rule','#aaa')+';stroke-width:3}'+
+      '.bubt{fill:'+v('--muted','#777')+';font-family:'+F+';font-weight:600}'+
+      '.lbl{fill:'+v('--ink','#111')+';font-family:'+F+';font-weight:600;paint-order:stroke;stroke:'+
+        v('--surface','#fff')+';stroke-width:13;stroke-linejoin:round}'+
+      '</style>';
+    var bg='<rect x="'+vb[0]+'" y="'+vb[1]+'" width="'+vb[2]+'" height="'+vb[3]+'" fill="'+v('--surface','#fff')+'"/>';
+    return '<?xml version="1.0" encoding="UTF-8"?>\n'+
+           '<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+src.getAttribute('viewBox')+
+           '" width="1400" role="img">'+css+bg+src.innerHTML+'</svg>\n';
+  }
+
+  function deliver(text, nombre){
+    var ta=document.getElementById('exTa'), box=document.getElementById('exBox'),
+        hint=document.getElementById('exHint');
+    if(!text){ hint.textContent='No hay dibujo que exportar: revisa las medidas primero.'; return; }
+    ta.value=text; box.hidden=false; document.getElementById('exName').textContent=nombre;
+    var kb=Math.round(text.length/1024);
+    var ok=function(){ hint.textContent='Copiado ('+kb+' KB). Pégalo en el Bloc de notas y guárdalo como '+nombre+'.'; };
+    var no=function(){
+      try{ ta.focus(); ta.select(); if(document.execCommand('copy')){ ok(); return; } }catch(e){}
+      box.open=true;
+      hint.textContent='El portapapeles está bloqueado acá. El contenido quedó abajo: haz clic dentro, Ctrl+A, Ctrl+C, y guárdalo como '+nombre+'.';
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      try{ navigator.clipboard.writeText(text).then(ok, no); }catch(e){ no(); }
+    }else no();
+  }
+
+  function nombreBase(){
+    return (S.tipo==='zigzag'?'zigzag':'pratt')+'-'+Math.round(S.L*1000)+'x'+Math.round(S.H*1000)+'-'+Math.round(S.n)+'div';
+  }
+  document.getElementById('exDxf').addEventListener('click',function(){
+    var R=compute(S); if(R.err){ deliver('', ''); return; }
+    deliver(toDXF(R,S), nombreBase()+'.dxf');
+  });
+  document.getElementById('exSvg').addEventListener('click',function(){
+    deliver(toSVG(), nombreBase()+'.svg');
+  });
+
+  render();
+})();
+</script>
+
+</body></html>
